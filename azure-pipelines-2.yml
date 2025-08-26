@@ -38,38 +38,55 @@ stages:
         npm run test --if-present
       displayName: 'npm install, build and test'
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
+    - task: CopyFiles@2
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-        replaceExistingArchive: true
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          package*.json
+          *.js
+          views/**
+          public/**
+          routes/**
+          bin/**
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: 'drop'
 
-      # To list artifact contents
-    - script: |
-        echo "=== Build output contents ==="
-        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr
-        echo "=== Largest files ==="
-        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr | head -20
-      displayName: 'Analyze artifact size'
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive files'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    #     includeRootFolder: false
+    #     archiveType: zip
+    #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    #     replaceExistingArchive: true
 
-    - script: |
-        cd $(Build.ArtifactStagingDirectory)
-        echo "=== Zip file contents ==="
-        unzip -l *.zip | head -50
-        echo "=== Extracting to analyze ==="
-        mkdir temp-extract
-        unzip -q *.zip -d temp-extract
-        echo "=== Directory sizes ==="
-        du -sh temp-extract/* | sort -hr
-        echo "=== Largest files in extracted content ==="
-        find temp-extract -type f -exec ls -lh {} + | sort -k5 -hr | head -20
-      displayName: 'Analyze zip contents'
+    # - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    #   artifact: drop
+
+    #   # To list artifact contents
+    # - script: |
+    #     echo "=== Build output contents ==="
+    #     find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr
+    #     echo "=== Largest files ==="
+    #     find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr | head -20
+    #   displayName: 'Analyze artifact size'
+
+    # - script: |
+    #     cd $(Build.ArtifactStagingDirectory)
+    #     echo "=== Zip file contents ==="
+    #     unzip -l *.zip | head -50
+    #     echo "=== Extracting to analyze ==="
+    #     mkdir temp-extract
+    #     unzip -q *.zip -d temp-extract
+    #     echo "=== Directory sizes ==="
+    #     du -sh temp-extract/* | sort -hr
+    #     echo "=== Largest files in extracted content ==="
+    #     find temp-extract -type f -exec ls -lh {} + | sort -k5 -hr | head -20
+    #   displayName: 'Analyze zip contents'
 
 - stage: Deploy
   displayName: Deploy stage
