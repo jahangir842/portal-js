@@ -7,7 +7,14 @@
 - https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-static-web-app-v0?view=azure-pipelines
 
 
-
+Immediate Fix
+Try this quick command to set the app setting:
+```bash
+bashaz webapp config appsettings set \
+    --name portal-js-jagz \
+    --resource-group portal-js \
+    --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
+```
 
 ---
 page_type: sample

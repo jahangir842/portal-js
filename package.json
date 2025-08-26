@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "JavaScript server written with Express.js",
   "main": "index.js",
+  "engines": {
+    "node": "18.x",
+    "npm": ">=8.0.0"
+  },
   "directories": {
     "doc": "docs",
     "test": "test"
