@@ -58,6 +58,19 @@ stages:
         find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr | head -20
       displayName: 'Analyze artifact size'
 
+    - script: |
+        cd $(Build.ArtifactStagingDirectory)
+        echo "=== Zip file contents ==="
+        unzip -l *.zip | head -50
+        echo "=== Extracting to analyze ==="
+        mkdir temp-extract
+        unzip -q *.zip -d temp-extract
+        echo "=== Directory sizes ==="
+        du -sh temp-extract/* | sort -hr
+        echo "=== Largest files in extracted content ==="
+        find temp-extract -type f -exec ls -lh {} + | sort -k5 -hr | head -20
+      displayName: 'Analyze zip contents'
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
