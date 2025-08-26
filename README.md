@@ -1,3 +1,14 @@
+- https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/javascript?view=azure-devops&tabs=yaml
+
+- Deploy to azure app service
+- https://learn.microsoft.com/en-us/azure/app-service/deploy-azure-pipelines?tabs=yaml
+
+- Deploy to a static site
+- https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-static-web-app-v0?view=azure-pipelines
+
+
+
+
 ---
 page_type: sample
 languages:
