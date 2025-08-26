@@ -1,20 +1,12 @@
 # Node.js Express Web App to Linux on Azure
 # Build a Node.js Express app and deploy it to Azure as a Linux web app.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
 - main
 
 variables:
-
-  # Azure Resource Manager connection created during pipeline creation
   azureSubscription: '20db7cd0-8bbe-432a-81fc-c623d12a0672'
-
-  # Web app name
   webAppName: 'portal-js-jagz'
-
-  # Environment name
   environmentName: 'portal-js-jagz'
 
 stages:
@@ -38,25 +30,32 @@ stages:
         npm run test --if-present
       displayName: 'npm install, build and test'
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
+    # Copy only necessary files (this excludes .git, node_modules, etc.)
+    - task: CopyFiles@2
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-        replaceExistingArchive: true
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          package*.json
+          *.js
+          views/**
+          public/**
+          routes/**
+          bin/**
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
-
-      # To list artifact contents
+    # Check what we're about to publish
     - script: |
-        echo "=== Build output contents ==="
-        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr
-        echo "=== Largest files ==="
-        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr | head -20
-      displayName: 'Analyze artifact size'
+        echo "=== Files to be deployed ==="
+        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} +
+        echo "=== Total size ==="
+        du -sh $(Build.ArtifactStagingDirectory)
+      displayName: 'Verify deployment package'
+
+    # Publish the artifact
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
 
 - stage: Deploy
   displayName: Deploy stage
@@ -79,5 +78,5 @@ stages:
               appType: webAppLinux
               appName: $(webAppName)
               runtimeStack: 'NODE|20LTS'
-              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+              package: $(Pipeline.Workspace)/drop
               startUpCommand: 'npm run start'
