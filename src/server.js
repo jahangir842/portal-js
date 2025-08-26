@@ -22,6 +22,18 @@ const create = async () => {
     // root route - serve static file
     app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../public/client.html')));
 
+    // In your main app.js or server.js
+    app.get('/health', (req, res) => {
+        res.status(200).json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            environment: process.env.NODE_ENV || 'development'
+        });
+    });
+
+
+
     // Catch errors
     app.use(utils.logErrors);
     app.use(utils.clientError404Handler);
