@@ -50,6 +50,14 @@ stages:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
 
+      # To list artifact contents
+    - script: |
+        echo "=== Build output contents ==="
+        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr
+        echo "=== Largest files ==="
+        find $(Build.ArtifactStagingDirectory) -type f -exec ls -lh {} + | sort -k5 -hr | head -20
+      displayName: 'Analyze artifact size'
+
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
