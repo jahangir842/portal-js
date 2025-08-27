@@ -11,12 +11,11 @@ name: Deploy Bicep files
 parameters:
 - name: azureServiceConnection
   type: string
-  default: '<your-connection-name>'
+  default: 'sp-portal-js-jagz'
 
 variables:
-  vmImageName: 'ubuntu-latest'
-  resourceGroupName: 'exampleRG'
-  location: '<your-resource-group-location>'
+  resourceGroupName: 'rg-portal-js-jagz'
+  location: 'Canada Central'
   templateFile: './main.bicep'
   csmParametersFile: './main.bicepparam'
 
