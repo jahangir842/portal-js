@@ -6,8 +6,8 @@ trigger:
 
 variables:
   azureSubscription: '20db7cd0-8bbe-432a-81fc-c623d12a0672'
-  webAppName: 'portal-js-jagz'
-  environmentName: 'portal-js-jagz-dev'
+  webAppName: 'portal-js-jagz-dev'
+  environmentName: 'dev'
 
 stages:
 - stage: Build
