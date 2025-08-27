@@ -1,12 +1,9 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Simple Bicep Deployment Pipeline
 
 trigger:
 - main
 
-name: Deploy Bicep files
+name: Deploy-$(Date:yyyyMMdd)-$(Rev:r)
 
 parameters:
 - name: azureServiceConnection
@@ -17,13 +14,25 @@ variables:
   resourceGroupName: 'rg-portal-js-jagz'
   location: 'Canada Central'
   templateFile: 'bicep/main.bicep'
-  csmParametersFile: 'bicep/main.bicepparam'
+  parametersFile: 'bicep/main.bicepparam'
 
 pool:
   name: default
 
 steps:
+- checkout: self
+
+- task: AzureCLI@2
+  displayName: 'Create Resource Group'
+  inputs:
+    azureSubscription: '${{ parameters.azureServiceConnection }}'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az group create --name $(resourceGroupName) --location "$(location)"
+
 - task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy Bicep Template'
   inputs:
     deploymentScope: 'Resource Group'
     action: 'Create Or Update Resource Group'
@@ -31,8 +40,7 @@ steps:
     location: '$(location)'
     templateLocation: 'Linked artifact'
     csmFile: '$(templateFile)'
-    csmParametersFile: '$(csmParametersFile)'
-    overrideParameters: '-storageAccountType Standard_LRS'
+    csmParametersFile: '$(parametersFile)'
     deploymentMode: 'Incremental'
-    deploymentName: 'DeployPipelineTemplate'
+    deploymentName: 'Deploy-$(Build.BuildNumber)'
     connectedServiceName: '${{ parameters.azureServiceConnection }}'
