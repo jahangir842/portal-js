@@ -16,8 +16,8 @@ parameters:
 variables:
   resourceGroupName: 'rg-portal-js-jagz'
   location: 'Canada Central'
-  templateFile: './main.bicep'
-  csmParametersFile: './main.bicepparam'
+  templateFile: 'bicep/main.bicep'
+  csmParametersFile: 'bicep/main.bicepparam'
 
 pool:
   name: default
