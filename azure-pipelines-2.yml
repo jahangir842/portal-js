@@ -6,8 +6,8 @@ trigger:
 
 variables:
   azureSubscription: '20db7cd0-8bbe-432a-81fc-c623d12a0672'
-  webAppName: 'portal-js-jagz'
-  environmentName: 'portal-js-jagz'
+  webAppName: 'portal-js-jagz-dev'
+  environmentName: 'dev'
 
 stages:
 - stage: Build
@@ -77,6 +77,6 @@ stages:
               azureSubscription: $(azureSubscription)
               appType: webAppLinux
               appName: $(webAppName)
-              runtimeStack: 'NODE|20LTS'
+              runtimeStack: 'NODE|22-lts'
               package: $(Pipeline.Workspace)/drop
               startUpCommand: 'npm run start'
