@@ -19,6 +19,9 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
   name: name
   location: location
   kind: 'app,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: appServicePlanId
     siteConfig: {
@@ -57,33 +60,6 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
     Application: 'Node.js Express Server'
   }
 }
-
-// Optional: Application Insights (uncomment if needed)
-/*
-resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: '${name}-insights'
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    Flow_Type: 'Redfield'
-    Request_Source: 'IbizaAIExtension'
-  }
-  tags: {
-    Environment: environment
-  }
-}
-
-// Add Application Insights connection string to app settings
-resource webAppInsightsConfig 'Microsoft.Web/sites/config@2023-01-01' = {
-  parent: webApp
-  name: 'appsettings'
-  properties: {
-    APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.InstrumentationKey
-    APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
-  }
-}
-*/
 
 // Outputs
 output id string = webApp.id

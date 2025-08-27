@@ -1,14 +1,14 @@
 # deploy.ps1 - Deployment script for Bicep templates
 
 param(
-    [Parameter(Mandatory=$true)]
-    [string]$SubscriptionId,
-    
-    [Parameter(Mandatory=$true)]
-    [string]$ResourceGroupName,
+    [Parameter(Mandatory=$false)]
+    [string]$SubscriptionId = 'b806251a-5643-4df5-9e3b-cc2781372122',
     
     [Parameter(Mandatory=$false)]
-    [string]$Location = "East US",
+    [string]$ResourceGroupName = "rg-portal-js-jagz",
+    
+    [Parameter(Mandatory=$false)]
+    [string]$Location = "Canada Central",
     
     [Parameter(Mandatory=$false)]
     [string]$Environment = "dev"
@@ -18,6 +18,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 Write-Host "Starting Azure Web App deployment..." -ForegroundColor Green
+Write-Host "Subscription ID: $SubscriptionId" -ForegroundColor Cyan
+Write-Host "Resource Group: $ResourceGroupName" -ForegroundColor Cyan
+Write-Host "Location: $Location" -ForegroundColor Cyan
+Write-Host "Environment: $Environment" -ForegroundColor Cyan
 
 # 1. Login to Azure (if not already logged in)
 try {
@@ -46,14 +50,30 @@ if (-not $rg) {
 
 # 4. Validate the Bicep template
 Write-Host "Validating Bicep template..." -ForegroundColor Yellow
-$validationResult = Test-AzResourceGroupDeployment `
-    -ResourceGroupName $ResourceGroupName `
-    -TemplateFile "main.bicep" `
-    -TemplateParameterFile "main.bicepparam"
+try {
+    $validationResult = Test-AzResourceGroupDeployment `
+        -ResourceGroupName $ResourceGroupName `
+        -TemplateFile "main.bicep" `
+        -TemplateParameterFile "main.bicepparam" `
+        -Verbose
 
-if ($validationResult) {
-    Write-Host "Template validation failed:" -ForegroundColor Red
-    $validationResult | ForEach-Object { Write-Host $_.Message -ForegroundColor Red }
+    if ($validationResult) {
+        Write-Host "Template validation failed:" -ForegroundColor Red
+        Write-Host "Error Details:" -ForegroundColor Red
+        $validationResult | ForEach-Object { 
+            Write-Host "Code: $($_.Code)" -ForegroundColor Red
+            Write-Host "Message: $($_.Message)" -ForegroundColor Red
+            Write-Host "Target: $($_.Target)" -ForegroundColor Red
+            if ($_.Details) {
+                Write-Host "Details:" -ForegroundColor Red
+                $_.Details | ForEach-Object { Write-Host "  - $($_.Message)" -ForegroundColor Red }
+            }
+            Write-Host "---" -ForegroundColor Red
+        }
+        exit 1
+    }
+} catch {
+    Write-Host "Validation error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 

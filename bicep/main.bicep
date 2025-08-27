@@ -1,9 +1,9 @@
-// main.bicep - Main template file
+// main.bicep - Main template file with modules
 @description('The name prefix for all resources')
 param namePrefix string = 'portal-js-jagz'
 
 @description('The Azure region where resources will be deployed')
-param location string = resourceGroup().location
+param location string = 'Canada Central'
 
 @description('The pricing tier for the App Service Plan')
 @allowed([
