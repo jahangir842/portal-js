@@ -18,7 +18,7 @@ param location string = 'Canada Central'
 param appServicePlanSku string = 'F1'
 
 @description('Node.js runtime version')
-param nodeVersion string = '18-lts'
+param nodeVersion string = '22-lts'
 
 @description('Environment name (dev, staging, prod)')
 @allowed([
