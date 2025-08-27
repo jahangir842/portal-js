@@ -4,8 +4,8 @@
   "description": "JavaScript server written with Express.js",
   "main": "index.js",
   "engines": {
-    "node": "18.x",
-    "npm": ">=8.0.0"
+    "node": "22.x",
+    "npm": "10.0.0"
   },
   "directories": {
     "doc": "docs",
