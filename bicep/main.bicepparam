@@ -10,4 +10,4 @@ param environment = 'dev'
 param appServicePlanSku = 'F1'  // Free tier
 
 // Runtime configuration
-param nodeVersion = '18-lts'
+param nodeVersion = '22-lts'
