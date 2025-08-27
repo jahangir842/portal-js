@@ -12,7 +12,6 @@
     "test": "test"
   },
   "scripts": {
-    "build": "npm run lint",
     "start": "node src/index.js",
     "start:dev": "npm run lint && nodemon --exec node src/index.js --unhandled-rejections=warn",
     "test": "jest --detectOpenHandles --coverage",
