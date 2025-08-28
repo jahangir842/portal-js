@@ -7,7 +7,7 @@ trigger:
       - bicep/*.bicep
       - bicep/*.bicepparam
 
-name: Deploy-Bicep-Files
+name: Infra Pipeline with Bicep Files
 
 parameters:
 - name: azureServiceConnection
