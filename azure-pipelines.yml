@@ -1,8 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
@@ -17,22 +12,25 @@ variables:
   resourceGroupName: 'rg-portal-js-jagz'
   location: 'Canada Central'
   templateFile: 'bicep/main.bicep'
-  csmParametersFile: 'bicep/main.bicepparam'
+  parametersFile: 'bicep/main.bicepparam'
 
 pool:
-  name: default
+  name: 'Default'   
 
 steps:
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzurePowerShell@5
+  displayName: 'Deploy Bicep to Resource Group'
   inputs:
-    deploymentScope: 'Resource Group'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: '$(resourceGroupName)'
-    location: '$(location)'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(templateFile)'
-    csmParametersFile: '$(csmParametersFile)'
-    overrideParameters: '-storageAccountType Standard_LRS'
-    deploymentMode: 'Incremental'
-    deploymentName: 'DeployPipelineTemplate'
-    connectedServiceName: '${{ parameters.azureServiceConnection }}'
+    azureSubscription: ${{ parameters.azureServiceConnection }}
+    ScriptType: 'InlineScript'
+    pwsh: true   # 👈 ensures it uses PowerShell Core on Linux
+    Inline: |
+      Write-Host "Deploying Bicep to Resource Group: $(resourceGroupName)"
+
+      New-AzResourceGroupDeployment `
+        -ResourceGroupName $(resourceGroupName) `
+        -TemplateFile $(templateFile) `
+        -TemplateParameterFile $(parametersFile) `
+        -Mode Incremental `
+        -Verbose
+    azurePowerShellVersion: LatestVersion
