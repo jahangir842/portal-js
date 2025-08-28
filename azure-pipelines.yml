@@ -1,4 +1,7 @@
 trigger:
+  branches:
+    include:
+      - main        # or your default branch name
   paths:
     include:
       - bicep/**/*.bicep
