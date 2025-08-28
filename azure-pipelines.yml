@@ -1,5 +1,7 @@
 trigger:
-- main
+  paths:
+    include:
+      - bicep/**/*.bicep
 
 name: Deploy-Bicep-Files
 
