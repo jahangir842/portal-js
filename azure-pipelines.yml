@@ -4,8 +4,8 @@ trigger:
       - main        # or your default branch name
   paths:
     include:
-      - bicep/**/*.bicep
-      - bicep/**/*.bicepparam
+      - bicep/*.bicep
+      - bicep/*.bicepparam
 
 name: Deploy-Bicep-Files
 
