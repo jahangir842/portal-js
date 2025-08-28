@@ -1,7 +1,7 @@
 trigger:
 - main
 
-name: Deploy Bicep files
+name: Deploy-Bicep-Files
 
 parameters:
 - name: azureServiceConnection
@@ -19,6 +19,7 @@ pool:
 
 steps:
 
+# 1. Ensure Resource Group
 - task: AzurePowerShell@5
   displayName: 'Create Resource Group if not exists'
   inputs:
@@ -30,31 +31,31 @@ steps:
       $loc = "$(location)"
 
       if (-not (Get-AzResourceGroup -Name $rgName -ErrorAction SilentlyContinue)) {
-        New-AzResourceGroup -Name $rgName -Location "$loc"
-        Write-Host "Resource group $rgName created in $loc."
+        Write-Host "Resource group $rgName not found. Creating..."
+        New-AzResourceGroup -Name $rgName -Location $loc
       } else {
-        Write-Host "Resource group $rgName already exists."
+        Write-Host "Resource group $rgName already exists in $loc."
       }
     azurePowerShellVersion: LatestVersion
 
-
+# 2. Deploy Bicep Template
 - task: AzurePowerShell@5
   displayName: 'Deploy Bicep to Resource Group'
   inputs:
     azureSubscription: ${{ parameters.azureServiceConnection }}
     ScriptType: InlineScript
-    pwsh: true   # 👈 ensures it uses PowerShell Core on Linux
+    pwsh: true
     Inline: |
-      $rgName = "$(resourceGroupName)"
+      $rgName   = "$(resourceGroupName)"
       $template = "$(templateFile)"
-      $params = "$(parametersFile)"
+      $params   = "$(parametersFile)"
 
-      Write-Host "Deploying Bicep to Resource Group: $rgName"
+      Write-Host "Deploying Bicep template $template to Resource Group $rgName"
 
       New-AzResourceGroupDeployment `
-        -ResourceGroupName "$rgName" `
-        -TemplateFile "$template" `
-        -TemplateParameterFile "$params" `
+        -ResourceGroupName $rgName `
+        -TemplateFile $template `
+        -TemplateParameterFile $params `
         -Mode Incremental `
         -Verbose
     azurePowerShellVersion: LatestVersion
