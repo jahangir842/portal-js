@@ -18,6 +18,23 @@ pool:
   name: default   
 
 steps:
+
+- task: AzurePowerShell@5
+  displayName: 'Create Resource Group if not exists'
+  inputs:
+    azureSubscription: ${{ parameters.azureServiceConnection }}
+    ScriptType: InlineScript
+    pwsh: true
+    Inline: |
+      if (-not (Get-AzResourceGroup -Name $(resourceGroupName) -ErrorAction SilentlyContinue)) {
+        New-AzResourceGroup -Name $(resourceGroupName) -Location $(location)
+        Write-Host "Resource group $(resourceGroupName) created in $(location)."
+      } else {
+        Write-Host "Resource group $(resourceGroupName) already exists."
+      }
+    azurePowerShellVersion: LatestVersion
+
+
 - task: AzurePowerShell@5
   displayName: 'Deploy Bicep to Resource Group'
   inputs:
