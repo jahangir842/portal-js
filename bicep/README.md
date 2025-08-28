@@ -20,7 +20,7 @@ Get-AzADServicePrincipal -ApplicationId <APP_ID_FROM_SERVICE_CONNECTION>
 Example output:
 
 ```text
-DisplayName : sp-portal-js-jagz
+DisplayName : <service connection name>
 Id          : 0bfe1352-e0c0-4b6f-ba20-19fce1aedc16   <-- Use this value for -ObjectId
 AppId       : 11111111-2222-3333-4444-555555555555
 ```
@@ -45,7 +45,7 @@ New-AzRoleAssignment `
   -Scope "/subscriptions/b806251a-5643-4df5-9e3b-cc2781372122"
 ```
 
-✅ Your service connection (**sp-portal-js-jagz**) now has the correct RBAC permissions.
+✅ Your service connection now has the correct RBAC permissions.
 The pipeline can create resource groups and deploy your Bicep templates without permission issues.
 
 ---
