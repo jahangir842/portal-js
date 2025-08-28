@@ -13,6 +13,7 @@ param location string = 'Canada Central'
   'S1'
   'S2'
   'P1V2'
+  'P2V2'
 ])
 param appServicePlanSku string = 'F1'
 
