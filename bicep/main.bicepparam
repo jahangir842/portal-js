@@ -2,7 +2,7 @@
 using './main.bicep'
 
 // Basic parameters
-param namePrefix = 'portal-js-jag'
+param namePrefix = 'portal-js-jagzz'
 param location = 'Canada Central'
 param environment = 'dev'
 
