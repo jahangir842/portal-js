@@ -1,7 +1,7 @@
 trigger:
 - main
 
-name: Deploy-$(Date:yyyyMMdd)-$(Rev:r)
+name: Deploy Bicep files
 
 parameters:
 - name: azureServiceConnection
@@ -13,10 +13,9 @@ variables:
   location: 'Canada Central'
   templateFile: 'bicep/main.bicep'
   parametersFile: 'bicep/main.bicepparam'
-  parametersFile: 'bicep/main.bicepparam'
 
 pool:
-  name: 'Default'   
+  name: default   
 
 steps:
 - task: AzurePowerShell@5
