@@ -2,6 +2,7 @@ trigger:
   paths:
     include:
       - bicep/**/*.bicep
+      - bicep/**/*.bicepparam
 
 name: Deploy-Bicep-Files
 
