@@ -15,7 +15,7 @@ variables:
   parametersFile: 'bicep/main.bicepparam'
 
 pool:
-  name: default   
+  name: default   # 👈 your self-hosted pool
 
 steps:
 
@@ -26,11 +26,14 @@ steps:
     ScriptType: InlineScript
     pwsh: true
     Inline: |
-      if (-not (Get-AzResourceGroup -Name $(resourceGroupName) -ErrorAction SilentlyContinue)) {
-        New-AzResourceGroup -Name $(resourceGroupName) -Location $(location)
-        Write-Host "Resource group $(resourceGroupName) created in $(location)."
+      $rgName = "$(resourceGroupName)"
+      $loc = "$(location)"
+
+      if (-not (Get-AzResourceGroup -Name $rgName -ErrorAction SilentlyContinue)) {
+        New-AzResourceGroup -Name $rgName -Location "$loc"
+        Write-Host "Resource group $rgName created in $loc."
       } else {
-        Write-Host "Resource group $(resourceGroupName) already exists."
+        Write-Host "Resource group $rgName already exists."
       }
     azurePowerShellVersion: LatestVersion
 
@@ -39,15 +42,19 @@ steps:
   displayName: 'Deploy Bicep to Resource Group'
   inputs:
     azureSubscription: ${{ parameters.azureServiceConnection }}
-    ScriptType: 'InlineScript'
+    ScriptType: InlineScript
     pwsh: true   # 👈 ensures it uses PowerShell Core on Linux
     Inline: |
-      Write-Host "Deploying Bicep to Resource Group: $(resourceGroupName)"
+      $rgName = "$(resourceGroupName)"
+      $template = "$(templateFile)"
+      $params = "$(parametersFile)"
+
+      Write-Host "Deploying Bicep to Resource Group: $rgName"
 
       New-AzResourceGroupDeployment `
-        -ResourceGroupName $(resourceGroupName) `
-        -TemplateFile $(templateFile) `
-        -TemplateParameterFile $(parametersFile) `
+        -ResourceGroupName "$rgName" `
+        -TemplateFile "$template" `
+        -TemplateParameterFile "$params" `
         -Mode Incremental `
         -Verbose
     azurePowerShellVersion: LatestVersion
